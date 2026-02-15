@@ -1,0 +1,91 @@
+---
+# =============================================================================
+# AIsatoshi V29.3 - 超高性能配置 (重度使用优化)
+# =============================================================================
+#
+# 📋 版本: V29.3-clean (2026-02-15)
+# 🔧 超高性能配置 - 适合频繁浏览和分析
+#
+# 资源配置：
+# - CPU: 4 units (8x 原配置)
+# - Memory: 16Gi (8x 原配置)
+# - Storage: 8Gi (4x 原配置)
+#
+# 预估成本 (Akash Network):
+# - 原配置: ~5000 uakt/小时 = ~$0.50-1.00/天
+# - 高性能: ~20000 uakt/小时 = ~$2.00-4.00/天
+# - 超高性能: ~40000 uakt/小时 = ~$4.00-8.00/天
+#
+# =============================================================================
+
+version: "2.0"
+
+services:
+  aisatoshi:
+    # 镜像版本 - V29.3-clean 超高性能版 (2026-02-15)
+    image: pancakekevin911/aisatoshi:v29.3-clean
+
+    # 🔐 新凭证 (2025-02-14 安全重置)
+    env:
+      # === 必需配置 ===
+      # 新钱包私钥 - 2025-02-14 生成
+      - AI_PRIVATE_KEY=b5860e25ca4f4b625e9c4c293f0f20d6a849dbd94499951794490dd31fc0f857
+
+      # 新 Gemini API Key - 2025-02-14 生成
+      - GEMINI_API_KEY=AIzaSyDQBaSyRvHXlehD_nNfyn5nHxh-o5UP-2Y
+
+      # 新 Telegram Bot Token - 2025-02-14 生成
+      - TELEGRAM_BOT_TOKEN=8247983622:AAExJZBnjQk0LrPzS31qcYw-FEREuKS7b7Y
+
+      # === 可选配置 ===
+      # Moltbook API Key - 保留原有 (已暴露但继续使用)
+      - MOLTBOOK_API_KEY=moltbook_sk_FA4mnPQdCG933ndWKYwq3zZ025YppW3e
+
+      # Telegram 用户 Chat ID (可选，自动检测)
+      - TELEGRAM_USER_ID=
+
+      # === 运行配置 ===
+      - LOG_LEVEL=DEBUG
+
+      # 数据目录配置
+      - DATA_DIR=/app/data
+      - WORKSPACE_DIR=/app/workspace
+
+      # Gemini 模型配置
+      - GEMINI_MODEL=gemini-3-pro-preview
+      - GEMINI_TIMEOUT=180
+
+    expose:
+      - port: 80
+        as: 80
+        to:
+          - global: true
+
+profiles:
+  compute:
+    aisatoshi:
+      resources:
+        cpu:
+          units: 4.0        # 8x 性能提升
+        memory:
+          size: 16Gi         # 8x 内存
+        storage:
+          size: 8Gi         # 4x 存储
+
+  placement:
+    akash:
+      attributes:
+        host: akash
+      signedBy:
+        anyOf:
+          - "akash1365yvmc4s7awdyj3n2sav7xfx76adc6dnmlx63"
+      pricing:
+        aisatoshi:
+          denom: uakt
+          amount: 40000        # 8x 出价 (优先获取最佳资源)
+
+deployment:
+  aisatoshi:
+    akash:
+      profile: aisatoshi
+      count: 1
