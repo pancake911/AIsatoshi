@@ -1,0 +1,39 @@
+# 排除所有部署配置文件（包含私钥和API密钥）
+deploy_*.yaml
+*.yaml
+*.yml
+
+# 排除日志文件
+*.log
+
+# macOS
+.DS_Store
+
+# Python
+__pycache__
+*.pyc
+
+# Git
+.git
+.gitignore
+
+# 环境变量
+.env
+
+# 脚本（不需要在镜像中）
+scripts/
+*.sh
+
+# 文档
+README.md
+*.md
+
+# 临时文件
+*.tmp
+*.swp
+
+# 备份文件（包含私钥！）
+BACKUP*.txt
+backup*.txt
+*.backup
+*.bak

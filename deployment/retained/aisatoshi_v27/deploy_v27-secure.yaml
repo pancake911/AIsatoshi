@@ -1,0 +1,112 @@
+---
+# ==============================================================================
+# AIsatoshi V27-SECURE - Akash部署配置
+# ==============================================================================
+#
+# 📋 版本历史 (Version History):
+# ==============================================================================
+#
+# V27-SECURE (2025-02-14)
+# ------------------------
+# 🔒 安全修复版本
+# ✅ 添加 .dockerignore 防止敏感文件被打包进 Docker 镜像
+# ✅ 修复私钥泄露问题 - deploy_v27.yaml 不再包含在镜像中
+# ✅ 验证镜像中无敏感 YAML/ENV 文件
+#
+# V27 (2025-02-14)
+# ----------------
+# 🚀 全新架构 V27 - 完全重写，非基于 V26+ 修改
+# ✅ 记忆原生系统 - 所有对话持久化存储
+# ✅ 任务继承原生 - 重启后自动恢复未完成任务
+# ✅ 进化学习原生 - 自动总结经验、学习方法、维护知识库
+# ✅ 长消息分段 - AI回复超过4000字符自动分页，保留代码块
+# ✅ 网页深度浏览 - 支持子页面浏览，API优先方式
+# ✅ 模块化架构 - core, models, storage, services, handlers
+#
+# 修复问题:
+# - ConfigurationError 导入错误 (在 config.py 中本地定义)
+# - SQLite 保留字 "references" 改为 "ref_data"
+# - Gemini 模型名称改为 gemini-3.0-pro-preview
+#
+# ==============================================================================
+#
+# 部署前检查清单 (Pre-deployment Checklist):
+# ✅ 镜像架构: linux/amd64
+# ✅ 镜像已推送到Docker Hub
+# ✅ 版本标签一致
+# ✅ 环境变量已设置
+# ✅ .dockerignore 已配置 (排除敏感文件)
+#
+# ==============================================================================
+
+version: "2.0"
+
+services:
+  aisatoshi:
+    # 镜像版本 - V27-SECURE 安全修复版
+    image: pancakekevin911/aisatoshi:v27-secure
+
+    # 环境变量（在部署时注入实际值）
+    env:
+      # === 必需配置 (Required) ===
+      # ⚠️ AI 钱包私钥 - 这个私钥已泄露！部署前必须更换为新私钥！
+      - AI_PRIVATE_KEY=0xd61a832b7d86cf727dcc2159ea4a0d2652b3fa44a3c0dfbbd88a2ff64b55f718
+
+      # Gemini API 密钥
+      - GEMINI_API_KEY=AIzaSyBDHONk8U2dIwTsyZjRaBM9EIazWjUpKnE
+
+      # Telegram Bot Token
+      - TELEGRAM_BOT_TOKEN=7696865066:AAFKdIIJLoFwSzdaJIXdQ4kNVH0p0LkA7yE
+
+      # === 可选配置 (Optional) ===
+      # Moltbook API 密钥
+      - MOLTBOOK_API_KEY=moltbook_sk_FA4mnPQdCG933ndWKYwq3zZ025YppW3e
+
+      # Telegram 用户 Chat ID (可选，自动检测)
+      - TELEGRAM_USER_ID=
+
+      # === 运行配置 ===
+      - LOG_LEVEL=INFO
+
+      # 数据目录配置
+      - DATA_DIR=/app/data
+      - WORKSPACE_DIR=/app/workspace
+
+      # Gemini 模型配置
+      - GEMINI_MODEL=gemini-3.0-pro-preview
+      - GEMINI_TIMEOUT=180
+
+    expose:
+      - port: 80
+        as: 80
+        to:
+          - global: true
+
+profiles:
+  compute:
+    aisatoshi:
+      resources:
+        cpu:
+          units: 0.5
+        memory:
+          size: 2Gi
+        storage:
+          size: 2Gi
+
+  placement:
+    akash:
+      attributes:
+        host: akash
+      signedBy:
+        anyOf:
+          - "akash1365yvmc4s7awdyj3n2sav7xfx76adc6dnmlx63"
+      pricing:
+        aisatoshi:
+          denom: uakt
+          amount: 5000
+
+deployment:
+  aisatoshi:
+    akash:
+      profile: aisatoshi
+      count: 1

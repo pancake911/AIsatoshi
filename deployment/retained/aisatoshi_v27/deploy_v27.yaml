@@ -1,0 +1,66 @@
+---
+# AIsatoshi V27 - Akash部署配置
+#
+# 部署前检查清单：
+# ✅ 镜像架构: linux/amd64
+# ✅ 镜像已推送到Docker Hub
+# ✅ 版本标签一致
+# ✅ 环境变量已设置
+
+version: "2.0"
+
+services:
+  aisatoshi:
+    # 镜像版本必须与build.sh和push.sh一致
+    image: pancakekevin911/aisatoshi:v27
+
+    # 环境变量（在部署时注入实际值）
+    env:
+      # 必需配置
+      - AI_PRIVATE_KEY=0xd61a832b7d86cf727dcc2159ea4a0d2652b3fa44a3c0dfbbd88a2ff64b55f718
+      - GEMINI_API_KEY=AIzaSyBDHONk8U2dIwTsyZjRaBM9EIazWjUpKnE
+      - TELEGRAM_BOT_TOKEN=7696865066:AAFKdIIJLoFwSzdaJIXdQ4kNVH0p0LkA7yE
+
+      # 可选配置
+      - MOLTBOOK_API_KEY=moltbook_sk_FA4mnPQdCG933ndWKYwq3zZ025YppW3e
+      - TELEGRAM_USER_ID=
+      - LOG_LEVEL=INFO
+
+      # 数据目录配置
+      - DATA_DIR=/app/data
+      - WORKSPACE_DIR=/app/workspace
+
+    expose:
+      - port: 80
+        as: 80
+        to:
+          - global: true
+
+profiles:
+  compute:
+    aisatoshi:
+      resources:
+        cpu:
+          units: 0.5
+        memory:
+          size: 2Gi
+        storage:
+          size: 2Gi  # V27: 增大存储以保存记忆和任务
+
+  placement:
+    akash:
+      attributes:
+        host: akash
+      signedBy:
+        anyOf:
+          - "akash1365yvmc4s7awdyj3n2sav7xfx76adc6dnmlx63"
+      pricing:
+        aisatoshi:
+          denom: uakt
+          amount: 5000
+
+deployment:
+  aisatoshi:
+    akash:
+      profile: aisatoshi
+      count: 1

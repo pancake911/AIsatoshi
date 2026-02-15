@@ -1,0 +1,105 @@
+---
+# ==============================================================================
+# AIsatoshi V28 - 安全重置版本
+# ==============================================================================
+#
+# 📋 版本历史 (Version History):
+# ==============================================================================
+#
+# V28 (2025-02-14) - 🔒 完全安全重置
+# ------------------------
+# ✅ 新钱包地址: 0xa364f3cc8122e3f012BBc95AB72E72c770C0eD9d
+# ✅ 新 Telegram Bot Token: 8247983622:***
+# ✅ 新 Gemini API Key: AIzaSyDQBaSyRvHXlehD***
+# ✅ .dockerignore 确保镜像不包含敏感文件
+# ✅ 所有凭证已轮换
+#
+# V27-SECURE (2025-02-14)
+# ------------------------
+# 🔒 安全修复版本 - 添加 .dockerignore
+#
+# V27 (2025-02-14)
+# ----------------
+# 🚀 全新架构 V27 - 记忆原生 + 任务继承原生 + 进化学习原生
+#
+# ==============================================================================
+#
+# 🔐 凭证状态 (2025-02-14):
+# - AI_PRIVATE_KEY: ✅ 新钱包 (未泄露)
+# - TELEGRAM_BOT_TOKEN: ✅ 新 bot (未泄露)
+# - GEMINI_API_KEY: ✅ 新 key (未泄露)
+# - MOLTBOOK_API_KEY: ⚠️  原有 key (已暴露但保留使用)
+#
+# ==============================================================================
+
+version: "2.0"
+
+services:
+  aisatoshi:
+    # 镜像版本 - 使用 V28-AMD64 镜像 (2025-02-14 安全构建)
+    image: pancakekevin911/aisatoshi:v28.2
+
+    # 🔐 新凭证 (2025-02-14 安全重置)
+    env:
+      # === 必需配置 ===
+      # 新钱包私钥 - 2025-02-14 生成
+      - AI_PRIVATE_KEY=b5860e25ca4f4b625e9c4c293f0f20d6a849dbd94499951794490dd31fc0f857
+
+      # 新 Gemini API Key - 2025-02-14 生成
+      - GEMINI_API_KEY=AIzaSyDQBaSyRvHXlehD_nNfyn5nHxh-o5UP-2Y
+
+      # 新 Telegram Bot Token - 2025-02-14 生成
+      - TELEGRAM_BOT_TOKEN=8247983622:AAExJZBnjQk0LrPzS31qcYw-FEREuKS7b7Y
+
+      # === 可选配置 ===
+      # Moltbook API Key - 保留原有 (已暴露但继续使用)
+      - MOLTBOOK_API_KEY=moltbook_sk_FA4mnPQdCG933ndWKYwq3zZ025YppW3e
+
+      # Telegram 用户 Chat ID (可选，自动检测)
+      - TELEGRAM_USER_ID=
+
+      # === 运行配置 ===
+      - LOG_LEVEL=INFO
+
+      # 数据目录配置
+      - DATA_DIR=/app/data
+      - WORKSPACE_DIR=/app/workspace
+
+      # Gemini 模型配置
+      - GEMINI_MODEL=gemini-3.0-pro-preview
+      - GEMINI_TIMEOUT=180
+
+    expose:
+      - port: 80
+        as: 80
+        to:
+          - global: true
+
+profiles:
+  compute:
+    aisatoshi:
+      resources:
+        cpu:
+          units: 0.5
+        memory:
+          size: 2Gi
+        storage:
+          size: 2Gi
+
+  placement:
+    akash:
+      attributes:
+        host: akash
+      signedBy:
+        anyOf:
+          - "akash1365yvmc4s7awdyj3n2sav7xfx76adc6dnmlx63"
+      pricing:
+        aisatoshi:
+          denom: uakt
+          amount: 5000
+
+deployment:
+  aisatoshi:
+    akash:
+      profile: aisatoshi
+      count: 1
