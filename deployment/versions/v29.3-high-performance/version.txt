@@ -1,0 +1,4 @@
+AIsatoshi V29.3-High-Performance (2026-02-15)
+配置: 2 CPU, 8Gi 内存, 4Gi 存储
+镜像: pancakekevin911/aisatoshi:v29.3-clean
+特点: 分段发送 + Playwright 浏览器 + 高性能配置

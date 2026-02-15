@@ -12,7 +12,8 @@
 | **V29.0** | ⚠️ 待验证 | parse_mode=None 修复 Telegram 解析错误 | Telegram 报错时 | `versions/v29.0/` |
 | **V29.1** | ⚠️ 待验证 | 记忆检索增强，URL 变体匹配 | 记忆不准确时 | `versions/v29.1/` |
 | **V29.2** | ⚠️ 待验证 | 网络优化，超时调整 | 网络不稳定时 | `versions/v29.2/` |
-| **V29.3** | ⚠️ 待验证 | 分段发送(3000字符/段) | 长消息被截断时 | `versions/v29.3/` |
+| **V29.3** | ✅ 稳定 | 分段发送(3000字符/段) + Playwright 完整浏览器 | 长消息被截断时 | `versions/v29.3/` |
+| **V29.3-High** | ✅ 推荐 | 2CPU/8Gi 高性能配置 + 分段发送 | 频繁使用/需要快速响应 | `versions/v29.3-high-performance/` |
 | **V29.5** | ⚠️ 待验证 | _send_single_message 辅助函数 | 分段发送失败时 | `versions/v29.5/` |
 
 ---
@@ -76,6 +77,41 @@ bot.send_message(chat_id, text)  # 不传 parse_mode，默认 None
 ---
 
 ### V29.2 (2026-02-15) - 网络优化
+
+**新增**: Playwright 超时配置
+
+```yaml
+GEMINI_TIMEOUT: 180  # 增加到 180 秒
+```
+
+**使用场景**: 网站加载慢导致浏览失败时
+
+---
+
+### V29.3-High (2026-02-15) - 高性能配置 + 分段发送
+
+**新增**: 2CPU/8Gi 高性能资源配置 + 分段发送逻辑
+
+```yaml
+resources:
+  cpu:
+    units: 2.0        # 4x 性能提升
+  memory:
+    size: 8Gi          # 4x 内存
+  storage:
+    size: 4Gi         # 2x 存储
+```
+
+**特点**:
+- ✅ 分段发送 (3000字符/段)
+- ✅ Playwright 完整浏览器
+- ✅ 2 CPU 独核，性能优先
+- ✅ 8Gi 内存，支持多标签页浏览
+- ✅ 预估成本 ~$2-00-4.00/天
+
+**使用场景**: 频繁使用、需要快速响应、大量浏览任务
+
+**部署**: `versions/v29.3-high-performance/deploy.yaml`
 
 **调整**: Playwright 超时配置
 
