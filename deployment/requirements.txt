@@ -1,0 +1,17 @@
+# AIsatoshi V30.0 - Python 依赖
+# 从头构建，不依赖任何 aisatoshi 基础镜像
+
+# Web 和浏览器
+playwright==1.40.0
+requests==2.31.0
+beautifulsoup4==4.12.2
+
+# 区块链
+eth-account==0.10.0
+web3==6.11.3
+
+# 数据
+pickle5==0.0.12
+
+# 工具
+python-dotenv==1.0.0

@@ -1,0 +1,71 @@
+---
+# =============================================================================
+# AIsatoshi V30.0 - 全新架构
+# =============================================================================
+#
+# 📋 版本: V30.0 (2026-02-16)
+# 🔧 重构内容:
+#   - 模块化架构（每个功能独立文件）
+#   - 深度浏览 bug 修复（使用 Playwright 提取的链接）
+#   - AI Prompt 简化（从 300 行减少到 50 行）
+#   - 从头构建 Docker（不依赖 aisatoshi 基础镜像）
+#   - 环境变量配置（不硬编码敏感信息）
+#
+# =============================================================================
+
+version: "2.0"
+
+services:
+  aisatoshi:
+    # 镜像版本 - V30.0 全新架构 (2026-02-16)
+    image: pancakekevin911/aisatoshi:v30.0
+
+    # 🔐 凭证配置（从环境变量读取，不在此硬编码）
+    env:
+      # === 必需配置 ===
+      - TELEGRAM_BOT_TOKEN
+      - GEMINI_API_KEY
+      - AI_PRIVATE_KEY
+
+      # === 可选配置 ===
+      - MOLTBOOK_API_KEY
+      - TELEGRAM_USER_ID
+      - GEMINI_MODEL=gemini-2.0-flash-exp
+      - GEMINI_TIMEOUT=180
+      - LOG_LEVEL=INFO
+      - DATA_DIR=/app/data
+
+    expose:
+      - port: 80
+        as: 80
+        to:
+          - global: true
+
+profiles:
+  compute:
+    aisatoshi:
+      resources:
+        cpu:
+          units: 2.0        # 2 CPU
+        memory:
+          size: 8Gi          # 8Gi 内存
+        storage:
+          size: 4Gi         # 4Gi 存储
+
+  placement:
+    akash:
+      attributes:
+        host: akash
+      signedBy:
+        anyOf:
+          - "akash1365yvmc4s7awdyj3n2sav7xfx76adc6dnmlx63"
+      pricing:
+        aisatoshi:
+          denom: uakt
+          amount: 20000        # 高性能配置
+
+deployment:
+  aisatoshi:
+    akash:
+      profile: aisatoshi
+      count: 1
